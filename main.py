@@ -64,6 +64,10 @@ class Hotel:
         df.loc[df["id"] == self.hotel_ID, "available"] = "no"
         save_hotels_dataframe(df)
 
+class SpaHotel(Hotel):
+
+    def book_spa_package(self) -> None:
+        pass
 
 class ReservationTicket:
     def __init__(self, customer_name: str, hotel_object: Hotel):
@@ -82,6 +86,28 @@ class ReservationTicket:
 
         ticket = f"""
         Thank you for your reservation, {self.name}!
+        Here are your booking details:
+        Hotel: {self.hotel.name}
+        """
+        return ticket.strip()
+    
+class SpaTicket:
+    def __init__(self, customer_name: str, hotel_object: Hotel):
+        """
+        Initializes a SpaTicket object with a customer name and a Hotel object.
+        """
+        self.hotel = hotel_object
+        self.name = customer_name
+
+    def generate_ticket(self) -> str:
+        """
+        Generates a spa ticket with booking details.
+        """
+        if self.hotel.name is None:
+            return "Hotel ID not found."
+
+        ticket = f"""
+        Thank you for your spa reservation, {self.name}!
         Here are your booking details:
         Hotel: {self.hotel.name}
         """
@@ -134,7 +160,7 @@ class SecureCreditCard(CreditCard):
 try:
     print(df)
     hotel_id = input("Enter the id of the hotel: ")
-    hotel = Hotel(hotel_id)
+    hotel = SpaHotel(hotel_id)
     if hotel.name is None:
         print("Hotel with the given ID does not exist.")
 
@@ -159,6 +185,12 @@ try:
         print(reservation_ticket.generate_ticket())
     else:
         print("Sorry, the hotel is not available.")
+
+    spa_prompt = input("Would you like to book a spa package? (y/n) ")
+    if spa_prompt.lower() == "y":
+        hotel.book_spa_package()
+        spa_ticket = SpaTicket(customer_name= name, hotel_object= hotel)
+        print(spa_ticket.generate_ticket())
 
 except Exception as e:
     print(f"An error occurred: {e}")
